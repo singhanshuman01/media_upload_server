@@ -134,6 +134,20 @@ app.get('/', (req, res) => {
         font-size: 14px;
         margin-left: 10px;
     }
+    .download-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        margin-left: 10px;
+    }
+    .download-btn:hover {
+        transform: translateY(-2px);
+    }
     .status {
         padding: 10px 20px;
         border-radius: 6px;
@@ -324,12 +338,21 @@ app.get('/', (req, res) => {
             uploadedList.innerHTML = files.map(file => \`
             <div class="file-item">
             <span class="file-name">\${file.name}</span>
+            <div>
             <span class="file-size">\${formatFileSize(file.size)}</span>
+            <button class="download-btn" onclick="downloadFile('\${file.name}')">
+            ⬇️ Download
+            </button>
+            </div>
             </div>
             \`).join('');
         } catch (error) {
             console.error('Failed to load files:', error);
         }
+    }
+
+    function downloadFile(filename) {
+        window.location.href = '/download/' + encodeURIComponent(filename);
     }
 
     // Load files on page load
@@ -378,6 +401,25 @@ app.get('/files', (req, res) => {
         }).sort((a, b) => b.uploadedAt - a.uploadedAt);
 
         res.json(fileDetails);
+    });
+});
+
+// Download file endpoint
+app.get('/download/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(uploadDir, filename);
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: 'File not found' });
+    }
+
+    // Send file for download
+    res.download(filePath, filename, (err) => {
+        if (err) {
+            console.error('Download error:', err);
+            res.status(500).json({ error: 'Failed to download file' });
+        }
     });
 });
 
