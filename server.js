@@ -38,459 +38,11 @@ app.use(express.json());
 
 // Main page HTML
 app.get('/', (req, res) => {
-    res.send(`
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Upload Server</title>
-    <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 20px;
-    }
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 12px;
-        padding: 40px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-    h1 {
-        color: #333;
-        margin-bottom: 10px;
-        font-size: 32px;
-    }
-    .subtitle {
-        color: #666;
-        margin-bottom: 30px;
-        font-size: 14px;
-    }
-    .upload-area {
-        border: 3px dashed #667eea;
-        border-radius: 8px;
-        padding: 60px 20px;
-        text-align: center;
-        background: #f8f9ff;
-        cursor: pointer;
-        transition: all 0.3s;
-        margin-bottom: 30px;
-    }
-    .upload-area:hover {
-        border-color: #764ba2;
-        background: #f0f1ff;
-    }
-    .upload-area.dragover {
-        border-color: #764ba2;
-        background: #e8e9ff;
-    }
-    .upload-icon {
-        font-size: 48px;
-        margin-bottom: 15px;
-    }
-    input[type="file"] { display: none; }
-    .btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 6px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: transform 0.2s;
-    }
-    .btn:hover { transform: translateY(-2px); }
-    .btn:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-        transform: none;
-    }
-    .file-list {
-        margin-top: 20px;
-    }
-    .file-item {
-        background: #f5f5f5;
-        padding: 15px;
-        border-radius: 6px;
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .file-name {
-        font-weight: 500;
-        color: #333;
-        flex: 1;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    .file-size {
-        color: #666;
-        font-size: 14px;
-        margin-left: 10px;
-    }
-    .download-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: transform 0.2s;
-        margin-left: 10px;
-    }
-    .download-btn:hover {
-        transform: translateY(-2px);
-    }
-    .status {
-        padding: 10px 20px;
-        border-radius: 6px;
-        margin-bottom: 20px;
-        display: none;
-    }
-    .status.success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-    .status.error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-    .progress {
-        width: 100%;
-        height: 6px;
-        background: #e0e0e0;
-        border-radius: 3px;
-        overflow: hidden;
-        margin-top: 10px;
-        display: none;
-    }
-    .progress-bar {
-        height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        width: 0%;
-        transition: width 0.3s;
-    }
-    .uploaded-files {
-        margin-top: 40px;
-    }
-    .uploaded-files h2 {
-        color: #333;
-        margin-bottom: 20px;
-        font-size: 24px;
-    }
-    .text-buffer {
-        margin-top: 40px;
-        border-top: 2px solid #eee;
-        padding-top: 30px;
-    }
-    .text-buffer h2 {
-        color: #333;
-        margin-bottom: 8px;
-        font-size: 24px;
-    }
-    .text-buffer .subtitle {
-        color: #666;
-        font-size: 13px;
-        margin-bottom: 15px;
-    }
-    .text-buffer textarea {
-        width: 100%;
-        height: 140px;
-        border: 2px solid #667eea;
-        border-radius: 8px;
-        padding: 14px;
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 14px;
-        resize: vertical;
-        outline: none;
-        transition: border-color 0.2s;
-        color: #333;
-        background: #f8f9ff;
-        box-sizing: border-box;
-    }
-    .text-buffer textarea:focus {
-        border-color: #764ba2;
-        background: #f0f1ff;
-    }
-    .text-buffer-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-        align-items: center;
-    }
-    .text-buffer-actions .char-count {
-        color: #999;
-        font-size: 13px;
-        margin-left: auto;
-    }
-    .text-status {
-        padding: 10px 20px;
-        border-radius: 6px;
-        margin-top: 12px;
-        display: none;
-        font-size: 14px;
-    }
-    .text-status.success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-    .text-status.error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-    </style>
-    </head>
-    <body>
-    <div class="container">
-    <h1>📁 Media Upload Server</h1>
-    <p class="subtitle">Upload any file to your local server</p>
-
-    <div class="status" id="status"></div>
-
-    <div class="upload-area" id="uploadArea">
-    <div class="upload-icon">☁️</div>
-    <h3>Drag & Drop Files Here</h3>
-    <p style="color: #666; margin: 10px 0;">or</p>
-    <button class="btn" onclick="document.getElementById('fileInput').click()">
-    Choose Files
-    </button>
-    <input type="file" id="fileInput" multiple>
-    <p style="color: #999; margin-top: 15px; font-size: 14px;">
-    Maximum file size: 100MB
-    </p>
-    </div>
-
-    <div class="progress" id="progress">
-    <div class="progress-bar" id="progressBar"></div>
-    </div>
-
-    <div class="file-list" id="fileList"></div>
-
-    <div class="uploaded-files">
-    <h2>Recently Uploaded</h2>
-    <div id="uploadedList"></div>
-    </div>
-
-    <div class="text-buffer">
-    <h2>✏️ Text Buffer</h2>
-    <p class="subtitle">Paste or type text below — it will be appended to <strong>notes.txt</strong> in the uploads folder with a date-time stamp.</p>
-    <textarea id="textInput" placeholder="Paste or type your text here..."></textarea>
-    <div class="text-buffer-actions">
-        <button class="btn" id="appendBtn" onclick="appendText()">📋 Append to File</button>
-        <button class="btn" style="background: #aaa;" onclick="clearText()">✕ Clear</button>
-        <span class="char-count" id="charCount">0 characters</span>
-    </div>
-    <div class="text-status" id="textStatus"></div>
-    </div>
-    </div>
-
-    <script>
-    const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('fileInput');
-    const fileList = document.getElementById('fileList');
-    const status = document.getElementById('status');
-    const progress = document.getElementById('progress');
-    const progressBar = document.getElementById('progressBar');
-    const uploadedList = document.getElementById('uploadedList');
-
-    // Drag and drop handlers
-    uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('dragover');
-    });
-
-    uploadArea.addEventListener('dragleave', () => {
-        uploadArea.classList.remove('dragover');
-    });
-
-    uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-        handleFiles(e.dataTransfer.files);
-    });
-
-    fileInput.addEventListener('change', (e) => {
-        handleFiles(e.target.files);
-    });
-
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-    }
-
-    function handleFiles(files) {
-        fileList.innerHTML = '';
-        Array.from(files).forEach(file => {
-            const div = document.createElement('div');
-            div.className = 'file-item';
-            div.innerHTML = \`
-            <span class="file-name">\${file.name}</span>
-            <span class="file-size">\${formatFileSize(file.size)}</span>
-            \`;
-            fileList.appendChild(div);
-        });
-
-        uploadFiles(files);
-    }
-
-    async function uploadFiles(files) {
-        const formData = new FormData();
-        Array.from(files).forEach(file => {
-            formData.append('files', file);
-        });
-
-        progress.style.display = 'block';
-        progressBar.style.width = '0%';
-
-        try {
-            const xhr = new XMLHttpRequest();
-
-            xhr.upload.addEventListener('progress', (e) => {
-                if (e.lengthComputable) {
-                    const percentComplete = (e.loaded / e.total) * 100;
-                    progressBar.style.width = percentComplete + '%';
-                }
-            });
-
-            xhr.addEventListener('load', () => {
-                if (xhr.status === 200) {
-                    const response = JSON.parse(xhr.responseText);
-                    showStatus('Files uploaded successfully!', 'success');
-                    fileList.innerHTML = '';
-                    fileInput.value = '';
-                    loadUploadedFiles();
-                    setTimeout(() => {
-                        progress.style.display = 'none';
-                        progressBar.style.width = '0%';
-                    }, 1000);
-                } else {
-                    showStatus('Upload failed!', 'error');
-                    progress.style.display = 'none';
-                }
-            });
-
-            xhr.addEventListener('error', () => {
-                showStatus('Upload failed!', 'error');
-                progress.style.display = 'none';
-            });
-
-            xhr.open('POST', '/upload');
-            xhr.send(formData);
-        } catch (error) {
-            showStatus('Upload failed: ' + error.message, 'error');
-            progress.style.display = 'none';
-        }
-    }
-
-    function showStatus(message, type) {
-        status.textContent = message;
-        status.className = 'status ' + type;
-        status.style.display = 'block';
-        setTimeout(() => {
-            status.style.display = 'none';
-        }, 5000);
-    }
-
-    async function loadUploadedFiles() {
-        try {
-            const response = await fetch('/files');
-            const files = await response.json();
-            uploadedList.innerHTML = files.map(file => \`
-            <div class="file-item">
-            <span class="file-name">\${file.name}</span>
-            <div>
-            <span class="file-size">\${formatFileSize(file.size)}</span>
-            <button class="download-btn" onclick="downloadFile('\${file.name}')">
-            ⬇️ Download
-            </button>
-            </div>
-            </div>
-            \`).join('');
-        } catch (error) {
-            console.error('Failed to load files:', error);
-        }
-    }
-
-    function downloadFile(filename) {
-        window.location.href = '/download/' + encodeURIComponent(filename);
-    }
-
-    // Text buffer
-    const textInput = document.getElementById('textInput');
-    const charCount = document.getElementById('charCount');
-    const textStatus = document.getElementById('textStatus');
-
-    textInput.addEventListener('input', () => {
-        charCount.textContent = textInput.value.length + ' characters';
-    });
-
-    async function appendText() {
-        const text = textInput.value.trim();
-        if (!text) {
-            showTextStatus('Please enter some text first.', 'error');
-            return;
-        }
-        const appendBtn = document.getElementById('appendBtn');
-        appendBtn.disabled = true;
-        try {
-            const response = await fetch('/append-text', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text })
-            });
-            const result = await response.json();
-            if (response.ok) {
-                showTextStatus('✅ Text appended to notes.txt successfully!', 'success');
-                textInput.value = '';
-                charCount.textContent = '0 characters';
-                loadUploadedFiles();
-            } else {
-                showTextStatus('Error: ' + result.error, 'error');
-            }
-        } catch (err) {
-            showTextStatus('Failed to append text: ' + err.message, 'error');
-        } finally {
-            appendBtn.disabled = false;
-        }
-    }
-
-    function clearText() {
-        textInput.value = '';
-        charCount.textContent = '0 characters';
-        textStatus.style.display = 'none';
-    }
-
-    function showTextStatus(message, type) {
-        textStatus.textContent = message;
-        textStatus.className = 'text-status ' + type;
-        textStatus.style.display = 'block';
-        setTimeout(() => { textStatus.style.display = 'none'; }, 5000);
-    }
-
-    // Load files on page load
-    loadUploadedFiles();
-    </script>
-    </body>
-    </html>
-    `);
+    res.sendFile(path.join(__dirname, "views/home.html"));
 });
 
 // File upload endpoint
+
 app.post('/upload', upload.array('files'), (req, res) => {
     if (!req.files || req.files.length === 0) {
         return res.status(400).json({ error: 'No files uploaded' });
@@ -509,6 +61,7 @@ app.post('/upload', upload.array('files'), (req, res) => {
         files: uploadedFiles
     });
 });
+
 
 // Get list of uploaded files
 app.get('/files', (req, res) => {
@@ -531,6 +84,9 @@ app.get('/files', (req, res) => {
     });
 });
 
+
+
+
 // Append text to notes.txt with datetime stamp
 app.post('/append-text', (req, res) => {
     const { text } = req.body;
@@ -538,7 +94,7 @@ app.post('/append-text', (req, res) => {
         return res.status(400).json({ error: 'No text provided' });
     }
 
-    const notesFile = path.join(uploadDir, 'notes.txt');
+    const notesFile = path.join(uploadDir, 'appendedText.txt');
     const now = new Date();
     const timestamp = now.toISOString().replace('T', ' ').replace('Z', ' UTC');
     const entry = `\n--- ${timestamp} ---\n${text.trim()}\n`;
@@ -557,6 +113,7 @@ app.post('/append-text', (req, res) => {
 app.get('/download/:filename', (req, res) => {
     const filename = req.params.filename;
     const filePath = path.join(uploadDir, filename);
+    console.log(`${req.ip} requested ${filename}`);
 
     // Check if file exists
     if (!fs.existsSync(filePath)) {
@@ -567,7 +124,7 @@ app.get('/download/:filename', (req, res) => {
     res.download(filePath, filename, (err) => {
         if (err) {
             console.error('Download error:', err);
-            res.status(500).json({ error: 'Failed to download file' });
+            return res.status(500).json({ error: 'Failed to download file' });
         }
     });
 });
@@ -588,12 +145,12 @@ function getLocalIPAddress() {
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
     const localIP = getLocalIPAddress();
-    console.log('\n╔════════════════════════════════════════════╗');
-    console.log('║    Media Upload Server Started! 🚀         ║');
-    console.log('╠════════════════════════════════════════════╣');
-    console.log(`║  Local:   http://localhost:${PORT}           ║`);
-    console.log(`║  Network: http://${localIP}:${PORT}      ║`);
-    console.log('╠════════════════════════════════════════════╣');
+    console.log('\n╔════════════════════════════════════════════════════════╗');
+    console.log('║    Media Upload Server Started! 🚀  \t       \t\t ║');
+    console.log('╠════════════════════════════════════════════════════════╣');
+    console.log(`║  Local:   http://localhost:${PORT}    \t\t         ║`);
+    console.log(`║  Network: http://${localIP}:${PORT}     \t\t ║`);
+    console.log('╠════════════════════════════════════════════════════════╣');
     console.log(`║  Upload folder: ${uploadDir.padEnd(24)} ║`);
-    console.log('╚════════════════════════════════════════════╝\n');
+    console.log('╚════════════════════════════════════════════════════════╝\n');
 });
