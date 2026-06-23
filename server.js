@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const QRcode = require('qrcode');
 
 const app = express();
 const PORT = 3000;
@@ -153,4 +154,15 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log('╠════════════════════════════════════════════════════════╣');
     console.log(`║  Upload folder: ${uploadDir.padEnd(24)} ║`);
     console.log('╚════════════════════════════════════════════════════════╝\n');
+    QRcode.toString(`http://${localIP}:3000`, 
+                    {
+                        type:'terminal',
+                        small: true,
+                        margin: 1, 
+                        version: 2
+                    }, 
+                    (err, url)=>{
+                        if(err) throw(err);
+                        console.log(url)
+                    });
 });
