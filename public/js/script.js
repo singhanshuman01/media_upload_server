@@ -41,8 +41,8 @@ function handleFiles(files) {
         const div = document.createElement('div');
         div.className = 'file-item';
         div.innerHTML = `
-            <span class="file-name">\${file.name}</span>
-            <span class="file-size">\${formatFileSize(file.size)}</span>
+            <span class="file-name">${file.name}</span>
+            <span class="file-size">${formatFileSize(file.size)}</span>
             `;
         fileList.appendChild(div);
     });
