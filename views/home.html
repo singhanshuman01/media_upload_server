@@ -9,47 +9,63 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1>📁 Media Upload Server</h1>
-        <p class="subtitle">Upload any file to your local server</p>
+    <div class="main-layout">
+        <div class="left-container">
+            <div class="container">
+                <h1>📁 Media Upload Server</h1>
+                <p class="subtitle">Upload any file to your local server</p>
 
-        <div class="status" id="status"></div>
+                <div class="status" id="status"></div>
 
-        <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">☁️</div>
-            <h3>Drag & Drop Files Here</h3>
-            <p style="color: #666; margin: 10px 0;">or</p>
-            <button class="btn" onclick="document.getElementById('fileInput').click()">
-                Choose Files
-            </button>
-            <input type="file" id="fileInput" multiple>
-            <p style="color: #999; margin-top: 15px; font-size: 14px;">
-                Maximum file size: 100MB
-            </p>
-        </div>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">☁️</div>
+                    <h3>Drag & Drop Files Here</h3>
+                    <p style="color: #666; margin: 10px 0;">or</p>
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">
+                        Choose Files
+                    </button>
+                    <input type="file" id="fileInput" multiple>
+                    <p style="color: #999; margin-top: 15px; font-size: 14px;">
+                        Maximum file size: 100MB
+                    </p>
+                </div>
 
-        <div class="progress" id="progress">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
+                <div class="progress" id="progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
 
-        <div class="file-list" id="fileList"></div>
+                <div class="file-list" id="fileList"></div>
 
-        <div class="uploaded-files">
-            <h2>Recently Uploaded</h2>
-            <div id="uploadedList"></div>
-        </div>
+                <div class="uploaded-files">
+                    <h2>Recently Uploaded</h2>
+                    <div id="uploadedList"></div>
+                </div>
 
-        <div class="text-buffer">
-            <h2>✏️ Text Buffer</h2>
-            <p class="subtitle">Paste or type text below — it will be appended to <strong>notes.txt</strong> in the
-                uploads folder with a date-time stamp.</p>
-            <textarea id="textInput" placeholder="Paste or type your text here..."></textarea>
-            <div class="text-buffer-actions">
-                <button class="btn" id="appendBtn" onclick="appendText()">📋 Append to File</button>
-                <button class="btn" style="background: #aaa;" onclick="clearText()">✕ Clear</button>
-                <span class="char-count" id="charCount">0 characters</span>
+                <div class="text-buffer">
+                    <h2>✏️ Text Buffer</h2>
+                    <p class="subtitle">Paste or type text below — it will be appended to <strong>notes.txt</strong> in the
+                        uploads folder with a date-time stamp.</p>
+                    <textarea id="textInput" placeholder="Paste or type your text here..."></textarea>
+                    <div class="text-buffer-actions">
+                        <button class="btn" id="appendBtn" onclick="appendText()">📋 Append to File</button>
+                        <button class="btn" style="background: #aaa;" onclick="clearText()">✕ Clear</button>
+                        <span class="char-count" id="charCount">0 characters</span>
+                    </div>
+                    <div class="text-status" id="textStatus"></div>
+                </div>
             </div>
-            <div class="text-status" id="textStatus"></div>
+        </div>
+
+        <div class="right-container">
+            <div class="notes-section">
+                <div class="notes-header">
+                    <h2>📝 Notes</h2>
+                    <button class="refresh-btn" onclick="loadNotes()">🔄 Refresh</button>
+                </div>
+                <div class="notes-content" id="notesContent">
+                    <p style="color: #999; text-align: center; padding: 20px;">Loading notes...</p>
+                </div>
+            </div>
         </div>
     </div>
 

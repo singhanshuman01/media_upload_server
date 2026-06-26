@@ -161,6 +161,7 @@ async function appendText() {
             textInput.value = '';
             charCount.textContent = '0 characters';
             loadUploadedFiles();
+            loadNotes();
         } else {
             showTextStatus('Error: ' + result.error, 'error');
         }
@@ -184,5 +185,62 @@ function showTextStatus(message, type) {
     setTimeout(() => { textStatus.style.display = 'none'; }, 5000);
 }
 
-// Load files on page load
+// Notes functionality
+const notesContent = document.getElementById('notesContent');
+
+async function loadNotes() {
+    try {
+        const response = await fetch('/notes');
+        const data = await response.json();
+        const notes = data.notes || [];
+        
+        if (notes.length === 0) {
+            notesContent.innerHTML = '<div class="notes-empty">No notes yet. Add some text from the buffer!</div>';
+            return;
+        }
+
+        notesContent.innerHTML = notes.map((note, index) => `
+            <div class="note-item">
+                <div class="note-item-text">${escapeHtml(note)}</div>
+                <div class="note-item-actions">
+                    <button class="copy-btn" onclick="copyToClipboard(${index}, this)">📋 Copy</button>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Failed to load notes:', error);
+        notesContent.innerHTML = '<div class="notes-empty">Error loading notes</div>';
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function copyToClipboard(index, button) {
+    const noteItem = button.closest('.note-item');
+    const noteText = noteItem.querySelector('.note-item-text').textContent;
+    
+    navigator.clipboard.writeText(noteText).then(() => {
+        const originalText = button.textContent;
+        button.textContent = '✅ Copied!';
+        button.classList.add('copied');
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.classList.remove('copied');
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy to clipboard');
+    });
+}
+
+// Load files and notes on page load
 loadUploadedFiles();
+loadNotes();
+
+// Refresh notes periodically
+// setInterval(loadNotes, 5000);

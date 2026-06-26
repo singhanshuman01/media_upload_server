@@ -85,8 +85,48 @@ app.get('/files', (req, res) => {
     });
 });
 
+// Get notes content without timestamps
+app.get('/notes', (req, res) => {
+    const notesFile = path.join(uploadDir, 'appendedText.txt');
+    
+    if (!fs.existsSync(notesFile)) {
+        return res.json({ notes: [] });
+    }
 
+    fs.readFile(notesFile, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Failed to read notes.txt:', err);
+            return res.status(500).json({ error: 'Failed to read notes' });
+        }
 
+        // Parse notes by extracting content between timestamp markers
+        const notes = [];
+        const lines = data.split('\n');
+        let currentNote = [];
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.startsWith('---') && line.includes('---')) {
+                // This is a timestamp line
+                if (currentNote.length > 0) {
+                    notes.push(currentNote.join('\n').trim());
+                    currentNote = [];
+                }
+            } else if (line.trim()) {
+                currentNote.push(line);
+            }
+        }
+        
+        // Add the last note if exists
+        if (currentNote.length > 0) {
+            notes.push(currentNote.join('\n').trim());
+        }
+
+        notes.reverse();
+
+        res.json({ notes });
+    });
+});
 
 // Append text to notes.txt with datetime stamp
 app.post('/append-text', (req, res) => {

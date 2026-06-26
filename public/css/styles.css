@@ -11,9 +11,24 @@ body {
     padding: 20px;
 }
 
-.container {
-    max-width: 800px;
+.main-layout {
+    display: flex;
+    gap: 20px;
+    max-width: 1600px;
     margin: 0 auto;
+}
+
+.left-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.right-container {
+    width: 350px;
+    flex-shrink: 0;
+}
+
+.container {
     background: white;
     border-radius: 12px;
     padding: 40px;
@@ -244,4 +259,135 @@ input[type="file"] {
     background: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+/* Notes Section Styling */
+.notes-section {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #eee;
+}
+
+.notes-header h2 {
+    color: #333;
+    font-size: 20px;
+    margin: 0;
+}
+
+.refresh-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.refresh-btn:hover {
+    transform: translateY(-2px);
+}
+
+.notes-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.note-item {
+    background: #f8f9ff;
+    border-left: 4px solid #667eea;
+    padding: 12px;
+    border-radius: 6px;
+    word-break: break-word;
+}
+
+.note-item-text {
+    color: #333;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.note-item-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.copy-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.copy-btn:hover {
+    transform: translateY(-1px);
+}
+
+.copy-btn.copied {
+    background: #28a745;
+}
+
+.notes-empty {
+    color: #999;
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .main-layout {
+        flex-direction: column;
+    }
+
+    .right-container {
+        width: 100%;
+    }
+
+    .notes-section {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .upload-area {
+        padding: 40px 15px;
+    }
+
+    .notes-section {
+        max-height: 300px;
+    }
 }
