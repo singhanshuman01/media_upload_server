@@ -8,6 +8,7 @@ const QRcode = require('qrcode');
 const app = express();
 const PORT = 3000;
 
+const notesDir = path.join(__dirname, 'notes');
 // Create uploads directory if it doesn't exist
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -87,7 +88,7 @@ app.get('/files', (req, res) => {
 
 // Get notes content without timestamps
 app.get('/notes', (req, res) => {
-    const notesFile = path.join(uploadDir, 'appendedText.txt');
+    const notesFile = path.join(notesDir, 'appendedText.txt');
     
     if (!fs.existsSync(notesFile)) {
         return res.json({ notes: [] });
@@ -135,7 +136,7 @@ app.post('/append-text', (req, res) => {
         return res.status(400).json({ error: 'No text provided' });
     }
 
-    const notesFile = path.join(uploadDir, 'appendedText.txt');
+    const notesFile = path.join(notesDir, 'appendedText.txt');
     const now = new Date();
     const timestamp = now.toISOString().replace('T', ' ').replace('Z', ' UTC');
     const entry = `\n--- ${timestamp} ---\n${text.trim()}\n`;
